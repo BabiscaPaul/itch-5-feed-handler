@@ -1,0 +1,14 @@
+*.NASDAQ_ITCH50
+
+build/
+
+*.pdf
+
+.claude/
+
+.DS_Store
+
+.vscode/
+.idea/
+
+PLAN.md
