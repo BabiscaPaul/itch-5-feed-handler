@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstring>
 #include <type_traits>
+#include <string_view>
 
 inline uint16_t read_big_endian(const uint8_t* p, std::integral_constant<int, 2>) {
     uint16_t raw;
@@ -34,6 +35,13 @@ inline uint16_t read_u16_be(const uint8_t* p) {
     return __builtin_bswap16(raw);
 }
 
+inline std::string_view read_stock(const uint8_t* p) {
+    const char* start{reinterpret_cast<const char*>(p)};
+    size_t len{8};
+    while (len > 0 && start[len - 1] == ' ') --len;
+    return std::string_view{start, len};
+}
+
 struct MessageHeader {
     const uint8_t* data;
 
@@ -55,16 +63,7 @@ struct AddOrder {
     uint32_t shares()            const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
     uint32_t price()             const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
 
-    // Stock symbol: 8 bytes ASCII, right-padded with spaces.
-    // We copy and null-terminate for easy use.
-    void stock(char* out) const {
-        std::memcpy(out, data + 24, 8);
-        out[8] = '\0';
-        // Trim trailing spaces
-        for (int i = 7; i >= 0 && out[i] == ' '; --i) {
-            out[i] = '\0';
-        }
-    }
+    std::string_view stock()     const { return read_stock(data + 24); }
 };
 
 // Add Order with MPID — 'F' (40 bytes)
@@ -80,13 +79,7 @@ struct AddOrderMPID {
     uint32_t shares()            const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
     uint32_t price()             const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
 
-    void stock(char* out) const {
-        std::memcpy(out, data + 24, 8);
-        out[8] = '\0';
-        for (int i = 7; i >= 0 && out[i] == ' '; --i) {
-            out[i] = '\0';
-        }
-    }
+    std::string_view stock()     const { return read_stock(data + 24); }
 };
 
 // Order Executed — 'E' (31 bytes)
@@ -161,11 +154,5 @@ struct Trade {
     uint32_t price()             const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
     uint64_t match_number()      const { return read_big_endian(data + 36, std::integral_constant<int, 8>{}); }
 
-    void stock(char* out) const {
-        std::memcpy(out, data + 24, 8);
-        out[8] = '\0';
-        for (int i = 7; i >= 0 && out[i] == ' '; --i) {
-            out[i] = '\0';
-        }
-    }
+    std::string_view stock()     const { return read_stock(data + 24); }
 };
