@@ -14,7 +14,7 @@ private:
     size_t m_size{0};
 
 public:
-    MmapReader(const char* filepath) {
+    explicit MmapReader(const char* filepath) {
         int fd = open(filepath, O_RDONLY);
         if (fd < 0) {
             perror("open failed");
