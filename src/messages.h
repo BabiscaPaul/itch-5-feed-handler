@@ -5,6 +5,14 @@
 #include <type_traits>
 #include <string_view>
 
+using OrderRef    = uint64_t;   // unique id for an order in the book
+using Timestamp   = uint64_t;   // nanoseconds since midnight
+using Price       = uint32_t;   // fixed-point with 4 implied decimals
+using Shares      = uint32_t;   // share count
+using StockLocate = uint16_t;   // exchange-assigned numeric symbol id
+using Tracking    = uint16_t;   // exchange tracking number
+using MatchNumber = uint64_t;   // unique id for a matched trade
+
 inline uint16_t read_big_endian(const uint8_t* p, std::integral_constant<int, 2>) {
     uint16_t raw;
     std::memcpy(&raw, p, 2);
@@ -23,7 +31,7 @@ inline uint64_t read_big_endian(const uint8_t* p, std::integral_constant<int, 8>
     return __builtin_bswap64(raw);
 }
 
-inline uint64_t read_timestamp(const uint8_t* p) {
+inline Timestamp read_timestamp(const uint8_t* p) {
     uint64_t ts = 0;
     std::memcpy(reinterpret_cast<uint8_t*>(&ts) + 2, p, 6);
     return __builtin_bswap64(ts);
@@ -45,10 +53,10 @@ inline std::string_view read_stock(const uint8_t* p) {
 struct MessageHeader {
     const uint8_t* data;
 
-    char type()              const { return static_cast<char>(data[0]); }
-    uint16_t stock_locate()  const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint16_t tracking()      const { return read_big_endian(data + 3, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()     const { return read_timestamp(data + 5); }
+    char        type()          const { return static_cast<char>(data[0]); }
+    StockLocate stock_locate()  const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Tracking    tracking()      const { return read_big_endian(data + 3, std::integral_constant<int, 2>{}); }
+    Timestamp   timestamp()     const { return read_timestamp(data + 5); }
 };
 
 // Add Order — 'A' (36 bytes)
@@ -56,14 +64,13 @@ struct MessageHeader {
 struct AddOrder {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t order_ref()         const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
-    char side()                  const { return static_cast<char>(data[19]); } // 'B' = buy, 'S' = sell
-    uint32_t shares()            const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
-    uint32_t price()             const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
-
-    std::string_view stock()     const { return read_stock(data + 24); }
+    StockLocate      stock_locate() const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp        timestamp()    const { return read_timestamp(data + 5); }
+    OrderRef         order_ref()    const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    char             side()         const { return static_cast<char>(data[19]); } // 'B' = buy, 'S' = sell
+    Shares           shares()       const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
+    Price            price()        const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
+    std::string_view stock()        const { return read_stock(data + 24); }
 };
 
 // Add Order with MPID — 'F' (40 bytes)
@@ -72,14 +79,13 @@ struct AddOrder {
 struct AddOrderMPID {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t order_ref()         const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
-    char side()                  const { return static_cast<char>(data[19]); }
-    uint32_t shares()            const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
-    uint32_t price()             const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
-
-    std::string_view stock()     const { return read_stock(data + 24); }
+    StockLocate      stock_locate() const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp        timestamp()    const { return read_timestamp(data + 5); }
+    OrderRef         order_ref()    const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    char             side()         const { return static_cast<char>(data[19]); }
+    Shares           shares()       const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
+    Price            price()        const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
+    std::string_view stock()        const { return read_stock(data + 24); }
 };
 
 // Order Executed — 'E' (31 bytes)
@@ -87,11 +93,11 @@ struct AddOrderMPID {
 struct OrderExecuted {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t order_ref()         const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
-    uint32_t executed_shares()   const { return read_big_endian(data + 19, std::integral_constant<int, 4>{}); }
-    uint64_t match_number()      const { return read_big_endian(data + 23, std::integral_constant<int, 8>{}); }
+    StockLocate stock_locate()    const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp   timestamp()       const { return read_timestamp(data + 5); }
+    OrderRef    order_ref()       const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    Shares      executed_shares() const { return read_big_endian(data + 19, std::integral_constant<int, 4>{}); }
+    MatchNumber match_number()    const { return read_big_endian(data + 23, std::integral_constant<int, 8>{}); }
 };
 
 // Order Executed With Price — 'C' (36 bytes)
@@ -99,11 +105,11 @@ struct OrderExecuted {
 struct OrderExecutedWithPrice {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t order_ref()         const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
-    uint32_t executed_shares()   const { return read_big_endian(data + 19, std::integral_constant<int, 4>{}); }
-    uint32_t price()             const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
+    StockLocate stock_locate()    const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp   timestamp()       const { return read_timestamp(data + 5); }
+    OrderRef    order_ref()       const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    Shares      executed_shares() const { return read_big_endian(data + 19, std::integral_constant<int, 4>{}); }
+    Price       price()           const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
 };
 
 // Order Cancel — 'X' (23 bytes)
@@ -111,10 +117,10 @@ struct OrderExecutedWithPrice {
 struct OrderCancel {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t order_ref()         const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
-    uint32_t cancelled_shares()  const { return read_big_endian(data + 19, std::integral_constant<int, 4>{}); }
+    StockLocate stock_locate()     const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp   timestamp()        const { return read_timestamp(data + 5); }
+    OrderRef    order_ref()        const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    Shares      cancelled_shares() const { return read_big_endian(data + 19, std::integral_constant<int, 4>{}); }
 };
 
 // Order Delete — 'D' (19 bytes)
@@ -122,9 +128,9 @@ struct OrderCancel {
 struct OrderDelete {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t order_ref()         const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    StockLocate stock_locate() const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp   timestamp()    const { return read_timestamp(data + 5); }
+    OrderRef    order_ref()    const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
 };
 
 // Order Replace — 'U' (35 bytes)
@@ -133,12 +139,12 @@ struct OrderDelete {
 struct OrderReplace {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t old_order_ref()     const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
-    uint64_t new_order_ref()     const { return read_big_endian(data + 19, std::integral_constant<int, 8>{}); }
-    uint32_t shares()            const { return read_big_endian(data + 27, std::integral_constant<int, 4>{}); }
-    uint32_t price()             const { return read_big_endian(data + 31, std::integral_constant<int, 4>{}); }
+    StockLocate stock_locate()  const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp   timestamp()     const { return read_timestamp(data + 5); }
+    OrderRef    old_order_ref() const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    OrderRef    new_order_ref() const { return read_big_endian(data + 19, std::integral_constant<int, 8>{}); }
+    Shares      shares()        const { return read_big_endian(data + 27, std::integral_constant<int, 4>{}); }
+    Price       price()         const { return read_big_endian(data + 31, std::integral_constant<int, 4>{}); }
 };
 
 // Trade (Non-Cross) — 'P' (44 bytes)
@@ -146,13 +152,12 @@ struct OrderReplace {
 struct Trade {
     const uint8_t* data;
 
-    uint16_t stock_locate()      const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
-    uint64_t timestamp()         const { return read_timestamp(data + 5); }
-    uint64_t order_ref()         const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
-    char side()                  const { return static_cast<char>(data[19]); }
-    uint32_t shares()            const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
-    uint32_t price()             const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
-    uint64_t match_number()      const { return read_big_endian(data + 36, std::integral_constant<int, 8>{}); }
-
-    std::string_view stock()     const { return read_stock(data + 24); }
+    StockLocate      stock_locate() const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp        timestamp()    const { return read_timestamp(data + 5); }
+    OrderRef         order_ref()    const { return read_big_endian(data + 11, std::integral_constant<int, 8>{}); }
+    char             side()         const { return static_cast<char>(data[19]); }
+    Shares           shares()       const { return read_big_endian(data + 20, std::integral_constant<int, 4>{}); }
+    Price            price()        const { return read_big_endian(data + 32, std::integral_constant<int, 4>{}); }
+    MatchNumber      match_number() const { return read_big_endian(data + 36, std::integral_constant<int, 8>{}); }
+    std::string_view stock()        const { return read_stock(data + 24); }
 };

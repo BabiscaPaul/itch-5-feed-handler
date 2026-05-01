@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
         if (header.type() == 'A') {
             AddOrder msg{data + offset};
 
-            uint64_t ts{msg.timestamp()};
+            Timestamp ts{msg.timestamp()};
             uint64_t total_secs{ts / 1'000'000'000};
             uint64_t nanos{ts % 1'000'000'000};
             uint64_t hours{total_secs / 3600};
