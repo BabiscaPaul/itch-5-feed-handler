@@ -36,14 +36,18 @@ void OrderBook::add(Side side, Price price, Shares shares) {
 void OrderBook::reduce(Side side, Price price, Shares shares) {
     switch (side) {
         case Side::Sell : {
-            m_asks[price] -= shares;
-            if (m_asks[price] == 0) m_asks.erase(price);
+            auto it = m_asks.find(price);
+            if (it == m_asks.end()) break;
+            if (shares >= it->second) m_asks.erase(it);
+            else                      it->second -= shares;
             break;
         }
 
         case Side::Buy : {
-            m_bids[price] -= shares;
-            if (m_bids[price] == 0) m_bids.erase(price);
+            auto it = m_bids.find(price);
+            if (it == m_bids.end()) break;
+            if (shares >= it->second) m_bids.erase(it);
+            else                      it->second -= shares;
             break;
         }
 
