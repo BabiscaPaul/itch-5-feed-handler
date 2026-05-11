@@ -39,7 +39,7 @@ void OrderBook::reduce(Side side, Price price, Shares shares) {
             auto it = m_asks.find(price);
             if (it == m_asks.end()) break;
             if (shares >= it->second) m_asks.erase(it);
-            else                      it->second -= shares;
+            else it->second -= shares;
             break;
         }
 
@@ -47,7 +47,7 @@ void OrderBook::reduce(Side side, Price price, Shares shares) {
             auto it = m_bids.find(price);
             if (it == m_bids.end()) break;
             if (shares >= it->second) m_bids.erase(it);
-            else                      it->second -= shares;
+            else it->second -= shares;
             break;
         }
 
