@@ -59,6 +59,17 @@ struct MessageHeader {
     Timestamp   timestamp()     const { return read_timestamp(data + 5); }
 };
 
+// Stock Directory — 'R' (39 bytes)
+// Sent at start-of-day to map symbols to stock locates for the session.
+// Locates are not stable across days — must be rebuilt each run.
+struct StockDirectory {
+    const uint8_t* data;
+
+    StockLocate      stock_locate() const { return read_big_endian(data + 1, std::integral_constant<int, 2>{}); }
+    Timestamp        timestamp()    const { return read_timestamp(data + 5); }
+    std::string_view stock()        const { return read_stock(data + 11); }
+};
+
 // Add Order — 'A' (36 bytes)
 // A new order enters the book.
 struct AddOrder {
