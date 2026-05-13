@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "order_book.h"
+#include "order_book/order_book.h"
 
 TEST(OrderBookTest, EmptyBookReturnsNoBBO) {
     OrderBook book;

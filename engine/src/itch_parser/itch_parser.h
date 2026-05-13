@@ -10,8 +10,8 @@
 #include <unordered_map>
 #include <unordered_set>
 #include "messages.h"
-#include "book_manager.h"
-#include "order_book.h"
+#include "book_manager/book_manager.h"
+#include "order_book/order_book.h"
 #include "csv/csv_writer.h"
 
 inline void parse_and_build(const uint8_t* data, size_t size,

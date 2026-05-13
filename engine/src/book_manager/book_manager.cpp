@@ -1,4 +1,4 @@
-#include "book_manager.h"
+#include "book_manager/book_manager.h"
 
 void BookManager::on_stock_directory(StockLocate locate, std::string_view symbol) {
     m_symbol_to_locate[std::string{symbol}] = locate;
