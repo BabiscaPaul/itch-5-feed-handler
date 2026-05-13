@@ -2,6 +2,7 @@
 
 #include "messages.h"
 #include "order_book.h"
+#include <optional>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -25,4 +26,6 @@ class BookManager {
 
         const OrderBook* book_for(StockLocate locate) const;
         const OrderBook* book_for_symbol(std::string_view symbol) const;
+
+        std::optional<Price> price_for(OrderRef ref) const;
 };
