@@ -18,14 +18,16 @@ struct Order {
     StockLocate locate{};
 };
 
-struct Level {                                                                                                   
-    Price  price{};                                                                                              
-    Shares shares{};                                                                                             
+struct Level {
+    Price  price{};
+    Shares shares{};
+    bool operator==(const Level&) const = default;
 };
 
 struct BBO {
     Level bid{};
     Level ask{};
+    bool operator==(const BBO&) const = default;
 };
 
 class OrderBook {

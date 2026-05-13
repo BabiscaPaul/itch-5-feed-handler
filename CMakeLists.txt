@@ -5,7 +5,14 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable(itch_handler src/main.cpp src/order_book.cpp src/book_manager.cpp src/csv/csv_writer.cpp)
+add_executable(
+    itch_handler
+    src/main.cpp
+    src/order_book.cpp
+    src/book_manager.cpp
+    src/csv/csv_writer.cpp
+    src/symbol_loader.cpp
+)
 target_include_directories(itch_handler PRIVATE src)
 
 # Tests

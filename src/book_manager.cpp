@@ -50,6 +50,12 @@ const OrderBook* BookManager::book_for(StockLocate locate) const {
     return it == m_books.end() ? nullptr : &it->second;
 }
 
+std::optional<Price> BookManager::price_for(OrderRef ref) const {
+    auto it = m_orders.find(ref);
+    if (it == m_orders.end()) return std::nullopt;
+    return it->second.price;
+}
+
 const OrderBook* BookManager::book_for_symbol(std::string_view symbol) const {
     auto it = m_symbol_to_locate.find(std::string{symbol});
     if (it == m_symbol_to_locate.end()) return nullptr;
