@@ -35,6 +35,16 @@ add_executable(book_manager_tests tests/book_manager_test.cpp src/order_book.cpp
 target_include_directories(book_manager_tests PRIVATE src)
 target_link_libraries(book_manager_tests PRIVATE GTest::gtest_main)
 
+add_executable(csv_writer_tests tests/csv_writer_test.cpp src/csv/csv_writer.cpp src/order_book.cpp)
+target_include_directories(csv_writer_tests PRIVATE src)
+target_link_libraries(csv_writer_tests PRIVATE GTest::gtest_main)
+
+add_executable(symbol_loader_tests tests/symbol_loader_test.cpp src/symbol_loader.cpp)
+target_include_directories(symbol_loader_tests PRIVATE src)
+target_link_libraries(symbol_loader_tests PRIVATE GTest::gtest_main)
+
 include(GoogleTest)
 gtest_discover_tests(order_book_tests)
 gtest_discover_tests(book_manager_tests)
+gtest_discover_tests(csv_writer_tests)
+gtest_discover_tests(symbol_loader_tests)
