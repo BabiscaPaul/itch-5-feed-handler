@@ -1,18 +1,13 @@
-*.NASDAQ_ITCH50
-
-build/
-
-output/
-
-.cache/
-
-*.pdf
-
-.claude/
-
+# OS
 .DS_Store
 
+# Editors
 .vscode/
 .idea/
 
-PLAN.md
+# Tooling
+.claude/
+.cache/
+
+# Engine output (CSVs, parquet, meta.json, etc.)
+data/

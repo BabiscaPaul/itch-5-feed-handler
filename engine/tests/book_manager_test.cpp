@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include "book_manager.h"
-#include "order_book.h"
+#include "book_manager/book_manager.h"
+#include "order_book/order_book.h"
 
 namespace {
     constexpr StockLocate LOC_AAPL = 7;

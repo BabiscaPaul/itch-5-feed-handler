@@ -1,0 +1,9 @@
+build/
+
+*.NASDAQ_ITCH50
+
+*.pdf
+
+PLAN.md
+
+docs/

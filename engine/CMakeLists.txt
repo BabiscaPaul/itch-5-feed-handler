@@ -8,8 +8,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(
     itch_handler
     src/main.cpp
-    src/order_book.cpp
-    src/book_manager.cpp
+    src/order_book/order_book.cpp
+    src/book_manager/book_manager.cpp
     src/csv/csv_writer.cpp
     src/symbol_loader.cpp
 )
@@ -27,15 +27,15 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(order_book_tests tests/order_book_test.cpp src/order_book.cpp)
+add_executable(order_book_tests tests/order_book_test.cpp src/order_book/order_book.cpp)
 target_include_directories(order_book_tests PRIVATE src)
 target_link_libraries(order_book_tests PRIVATE GTest::gtest_main)
 
-add_executable(book_manager_tests tests/book_manager_test.cpp src/order_book.cpp src/book_manager.cpp)
+add_executable(book_manager_tests tests/book_manager_test.cpp src/order_book/order_book.cpp src/book_manager/book_manager.cpp)
 target_include_directories(book_manager_tests PRIVATE src)
 target_link_libraries(book_manager_tests PRIVATE GTest::gtest_main)
 
-add_executable(csv_writer_tests tests/csv_writer_test.cpp src/csv/csv_writer.cpp src/order_book.cpp)
+add_executable(csv_writer_tests tests/csv_writer_test.cpp src/csv/csv_writer.cpp src/order_book/order_book.cpp)
 target_include_directories(csv_writer_tests PRIVATE src)
 target_link_libraries(csv_writer_tests PRIVATE GTest::gtest_main)
 
