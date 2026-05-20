@@ -48,6 +48,7 @@ export function OverviewPage() {
     : 0;
 
   const bboSize = runQuery.data?.files['bbo.csv'];
+  const tradesSize = runQuery.data?.files['trades.csv'];
 
   return (
     <Stack gap="xl">
@@ -62,18 +63,32 @@ export function OverviewPage() {
             — derived from per-symbol BBO and trade output written by the C++ engine.
           </Text>
         </Stack>
-        {bboSize !== undefined && (
-          <Button
-            component="a"
-            href={`${API_BASE}/runs/${encodeURIComponent(runId)}/files/bbo`}
-            download
-            variant="default"
-            size="sm"
-            ff="monospace"
-          >
-            ↓ Download bbo.csv ({fmtBytes(bboSize)})
-          </Button>
-        )}
+        <Group gap="xs" wrap="wrap">
+          {bboSize !== undefined && (
+            <Button
+              component="a"
+              href={`${API_BASE}/runs/${encodeURIComponent(runId)}/files/bbo`}
+              download
+              variant="default"
+              size="sm"
+              ff="monospace"
+            >
+              ↓ bbo.csv ({fmtBytes(bboSize)})
+            </Button>
+          )}
+          {tradesSize !== undefined && (
+            <Button
+              component="a"
+              href={`${API_BASE}/runs/${encodeURIComponent(runId)}/files/trades`}
+              download
+              variant="default"
+              size="sm"
+              ff="monospace"
+            >
+              ↓ trades.csv ({fmtBytes(tradesSize)})
+            </Button>
+          )}
+        </Group>
       </Group>
 
       {runQuery.isError && <ErrorBanner error={runQuery.error} title="Failed to load run" />}
