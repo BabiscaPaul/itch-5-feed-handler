@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import db_lifespan
-from app.routers import health, runs
+from app.routers import bbo, health, runs, trades
 from app.settings import get_settings
 
 settings = get_settings()
@@ -23,3 +23,5 @@ app.add_middleware(
 
 app.include_router(health.router)
 app.include_router(runs.router)
+app.include_router(bbo.router)
+app.include_router(trades.router)
