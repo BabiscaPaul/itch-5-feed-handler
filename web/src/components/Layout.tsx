@@ -1,6 +1,8 @@
 import { AppShell, Burger, Group, NavLink, Stack, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { NavLink as RouterNavLink, Outlet, useLocation } from 'react-router-dom';
+import { HealthDot } from './HealthDot';
+import { RunPicker } from './RunPicker';
 
 const navItems = [
   { to: '/', label: 'Overview', end: true },
@@ -27,27 +29,31 @@ export function Layout() {
       padding="lg"
     >
       <AppShell.Header>
-        <Group h="100%" px="md" gap="md" wrap="nowrap">
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-          <Group gap={8} wrap="nowrap">
-            <Text
-              ff="monospace"
-              fw={700}
-              size="sm"
-              style={{ letterSpacing: '0.12em' }}
-              className="term-glow"
-            >
-              ITCH
-            </Text>
-            <Text
-              ff="monospace"
-              size="xs"
-              c="dimmed"
-              style={{ letterSpacing: '0.12em', textTransform: 'uppercase' }}
-            >
-              Replay Explorer
-            </Text>
+        <Group h="100%" px="md" gap="md" wrap="nowrap" justify="space-between">
+          <Group gap="md" wrap="nowrap">
+            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            <Group gap={8} wrap="nowrap">
+              <Text
+                ff="monospace"
+                fw={700}
+                size="sm"
+                style={{ letterSpacing: '0.12em' }}
+                className="term-glow"
+              >
+                ITCH
+              </Text>
+              <Text
+                ff="monospace"
+                size="xs"
+                c="dimmed"
+                style={{ letterSpacing: '0.12em', textTransform: 'uppercase' }}
+              >
+                Replay Explorer
+              </Text>
+              <HealthDot />
+            </Group>
           </Group>
+          <RunPicker />
         </Group>
       </AppShell.Header>
 
