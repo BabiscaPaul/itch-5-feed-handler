@@ -16,4 +16,7 @@ async def db_lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 def get_db(request: Request) -> duckdb.DuckDBPyConnection:
-    return request.app.state.db
+    # Hand out a fresh cursor per request so concurrent handlers don't
+    # serialize on the single connection's internal mutex (which can wedge
+    # under request bursts from the frontend).
+    return request.app.state.db.cursor()

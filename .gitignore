@@ -11,6 +11,7 @@
 
 # Engine output (CSVs, parquet, meta.json, etc.)
 data/
+engine/feeds/
 
 # Python (api/)
 __pycache__/
