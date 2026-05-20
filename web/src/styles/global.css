@@ -1,0 +1,157 @@
+/* Bloomberg-terminal palette overrides on top of Mantine's dark scheme. */
+
+[data-mantine-color-scheme='dark'] {
+  --mantine-color-body: #07090d;
+  --mantine-color-text: #e6ebf2;
+  --mantine-color-dimmed: #8a93a3;
+
+  --mantine-color-default: #0e1218;
+  --mantine-color-default-hover: #161b23;
+  --mantine-color-default-border: #1c2230;
+  --mantine-color-default-color: #e6ebf2;
+
+  --mantine-color-dark-0: #e6ebf2;
+  --mantine-color-dark-1: #c6cbd1;
+  --mantine-color-dark-2: #9ba2ad;
+  --mantine-color-dark-3: #6e7785;
+  --mantine-color-dark-4: #2a313d;
+  --mantine-color-dark-5: #1c2230;
+  --mantine-color-dark-6: #11151c;
+  --mantine-color-dark-7: #0b0e14;
+  --mantine-color-dark-8: #070a0e;
+  --mantine-color-dark-9: #03050a;
+
+  --terminal-grid: #11151c;
+  --terminal-border: #1c2230;
+  --terminal-border-strong: #2a313d;
+  --terminal-amber: #ff8c00;
+  --terminal-amber-dim: #b85d00;
+  --terminal-cyan: #5cc8ff;
+  --terminal-green: #34d399;
+  --terminal-red: #ef4444;
+  --terminal-yellow: #fbbf24;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--mantine-color-body);
+  font-feature-settings: 'tnum' 1, 'cv11' 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tighten the AppShell chrome. */
+.mantine-AppShell-header {
+  background: #050709 !important;
+  border-bottom: 1px solid var(--terminal-border) !important;
+}
+
+.mantine-AppShell-navbar {
+  background: #080b10 !important;
+  border-right: 1px solid var(--terminal-border) !important;
+}
+
+.mantine-AppShell-main {
+  background:
+    radial-gradient(
+      ellipse 800px 400px at 20% -10%,
+      rgba(255, 140, 0, 0.04),
+      transparent 60%
+    ),
+    var(--mantine-color-body) !important;
+}
+
+/* NavLink: terminal-y look. */
+.mantine-NavLink-root {
+  border-radius: 2px !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+  color: var(--mantine-color-dimmed) !important;
+  padding: 8px 10px !important;
+  border-left: 2px solid transparent !important;
+  transition: background 120ms, color 120ms, border-color 120ms !important;
+}
+
+.mantine-NavLink-root:hover {
+  background: #11151c !important;
+  color: var(--mantine-color-text) !important;
+}
+
+.mantine-NavLink-root[data-active] {
+  background: #11151c !important;
+  color: var(--terminal-amber) !important;
+  border-left-color: var(--terminal-amber) !important;
+}
+
+.mantine-NavLink-label {
+  font-weight: 500 !important;
+}
+
+/* Reusable terminal-style classes used by pages. */
+.term-label {
+  font-family: var(--mantine-font-family-monospace);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--mantine-color-dimmed);
+}
+
+.term-value {
+  font-family: var(--mantine-font-family-monospace);
+  font-variant-numeric: tabular-nums;
+}
+
+.term-glow {
+  color: var(--terminal-amber);
+  text-shadow: 0 0 12px rgba(255, 140, 0, 0.35);
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--terminal-green);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Scrollbar — slim, dark. */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #1c2230;
+  border-radius: 4px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #2a313d;
+}
+
+/* Selection. */
+::selection {
+  background: rgba(255, 140, 0, 0.25);
+  color: #fff;
+}
