@@ -1,4 +1,5 @@
 import {
+  Button,
   Center,
   Group,
   Paper,
@@ -9,6 +10,7 @@ import {
   Title,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE } from '../api/config';
 import { getRun, listSymbols } from '../api/runs';
 import { KpiCard } from '../components/KpiCard';
 import { Loading } from '../components/Loading';
@@ -45,18 +47,34 @@ export function OverviewPage() {
     ? Object.values(runQuery.data.files).reduce((acc, n) => acc + (n as number), 0)
     : 0;
 
+  const bboSize = runQuery.data?.files['bbo.csv'];
+
   return (
     <Stack gap="xl">
-      <Stack gap={8}>
-        <Title order={2}>Overview</Title>
-        <Text c="dimmed" size="sm">
-          Run{' '}
-          <Text component="span" ff="monospace" c="amber.5">
-            {runId}
-          </Text>{' '}
-          — derived from per-symbol BBO and trade output written by the C++ engine.
-        </Text>
-      </Stack>
+      <Group justify="space-between" align="flex-end" wrap="wrap" gap="md">
+        <Stack gap={8}>
+          <Title order={2}>Overview</Title>
+          <Text c="dimmed" size="sm">
+            Run{' '}
+            <Text component="span" ff="monospace" c="amber.5">
+              {runId}
+            </Text>{' '}
+            — derived from per-symbol BBO and trade output written by the C++ engine.
+          </Text>
+        </Stack>
+        {bboSize !== undefined && (
+          <Button
+            component="a"
+            href={`${API_BASE}/runs/${encodeURIComponent(runId)}/files/bbo`}
+            download
+            variant="default"
+            size="sm"
+            ff="monospace"
+          >
+            ↓ Download bbo.csv ({fmtBytes(bboSize)})
+          </Button>
+        )}
+      </Group>
 
       {runQuery.isError && <ErrorBanner error={runQuery.error} title="Failed to load run" />}
 

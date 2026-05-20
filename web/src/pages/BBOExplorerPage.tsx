@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
+  Button,
   Center,
   Group,
   Paper,
@@ -12,6 +13,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import type { AreaData, LineData } from 'lightweight-charts';
 import { getBbo, type Resolution } from '../api/bbo';
+import { API_BASE } from '../api/config';
 import { bucketToUnixSeconds } from '../api/time';
 import { BBOChart } from '../components/BBOChart';
 import { SpreadChart } from '../components/SpreadChart';
@@ -107,6 +109,24 @@ export function BBOExplorerPage() {
                 onLabel="ON"
                 offLabel="OFF"
               />
+            </Stack>
+            <Stack gap={4}>
+              <Text className="term-label">Download</Text>
+              <Button
+                component="a"
+                href={
+                  symbol
+                    ? `${API_BASE}/runs/${encodeURIComponent(runId)}/files/bbo?symbol=${encodeURIComponent(symbol)}`
+                    : undefined
+                }
+                download
+                disabled={!symbol}
+                variant="default"
+                size="sm"
+                ff="monospace"
+              >
+                ↓ {symbol ?? '…'} BBO
+              </Button>
             </Stack>
           </Group>
         </Group>

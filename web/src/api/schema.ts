@@ -106,6 +106,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/runs/{run_id}/files/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Download File */
+        get: operations["download_file_runs__run_id__files__kind__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -487,6 +504,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TradesPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    download_file_runs__run_id__files__kind__get: {
+        parameters: {
+            query?: {
+                /** @description If present, return only rows for this ticker; otherwise the full file. */
+                symbol?: string | null;
+            };
+            header?: never;
+            path: {
+                /** @description Trading day in YYYY-MM-DD format */
+                run_id: string;
+                kind: "bbo" | "trades";
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */
