@@ -11,3 +11,12 @@
 
 # Engine output (CSVs, parquet, meta.json, etc.)
 data/
+
+# Python (api/)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
